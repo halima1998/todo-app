@@ -8,8 +8,9 @@ exports.up = async (knex) => {
         table.string('email').notNullable().unique()
         table.string('password').notNullable()
     })
+   
 };
 
 exports.down = async (knex) => {
-    await knex.schema.dropTable('users')
+    await knex.schema.dropTable('users');
 };
