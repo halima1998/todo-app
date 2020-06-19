@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var knex = require('../knex');
-var createUser = require('../service/users')
-var TodoService = require('../service/list');
-var  createCompleted_list= require('../service/completed_list');
+const express = require('express');
+const router = express.Router();
+const knex = require('../knex');
+const createUser = require('../service/users')
+const TodoService = require('../service/list');
+const completeTodo = require('../service/completed_list');
 
 router.post('/singUp' , async (req, res) => {
   await createUser(req.body) //  creating new user.
@@ -16,6 +16,14 @@ router.post('/singUp' , async (req, res) => {
    })
 });
 
+// demo route
+router.get('/complete_todo', async (req, res) => {
+   await completeTodo.createCompleted_list()
+   .then(data => {
+      res.send(data)
+   })
+})
+
 router.get('/get/all/users', async (req, res) => {
    await knex("users") // get all users from database
    .then((data) => {
@@ -23,8 +31,10 @@ router.get('/get/all/users', async (req, res) => {
    })
 })
 
-router.post('/add/todo' , async(req, res) =>{
-   await TodoService.createList(req.body) // It create new todo list
+router.post('/add/todo' , async(req, res) => {
+   const details = req.body;
+   details.isPending = true
+   await TodoService.createList(details) // It create new todo list
    .then((result) => {
       if(result.length) {
          res.send("data inserted!")
@@ -59,8 +69,9 @@ router.put('/update/todo/:id' , async (req ,res)=>{
       res.send(allTodo)
    })
  });
- router.post('/complete_list' , async(req, res) =>{
-   await createCompleted_list(req.body) // It create new completed list
+ 
+ router.post('/completed_list' , async(req, res) =>{
+   await TodoService.createCompleted_list(req.body) // It create new completed list
    .then((result) => {
       if(result.length) {
          res.send("data inserted!")
@@ -70,5 +81,15 @@ router.put('/update/todo/:id' , async (req ,res)=>{
     })
 
 });
+
+router.post('/completed/todo/:todoId', async(req, res) => {
+   const todoId = req.params.todoId
+   await TodoService.completeTodo(todoId)
+   .then(data => {
+      res.send({
+         data: data
+      })
+   })
+})
 
 module.exports = router;

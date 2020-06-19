@@ -2,6 +2,7 @@ var knex = require('../knex');
 
 module.exports = {
     createList: (details) => {
+        console.log(details)
         return knex('list').insert(details);
     },
     deleteTodo: (id) => {
@@ -15,5 +16,10 @@ module.exports = {
     },
     grtTodo: (id) => {
       return knex("list").where("users_id",id)
+    },
+    completeTodo: (todoId) => {
+      return knex("list").update({
+        isPending: false
+      }).where('id', todoId)
     }
 }
