@@ -1,12 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const knex = require('../knex');
-const createUser = require('../service/users')
+const bcrypt =require('bcrypt')
+const hash = bcrypt.hashSync(process.env.USER, 10)
+const createUsers = require('../service/users')
 const TodoService = require('../service/list');
-const completeTodo = require('../service/completed_list');
+const completeTodo = require('../service/completed_list')
+const jwt = require("jsonwebtoken");
+const { token } = require('morgan');
+const { createList } = require('../service/list');
+const { render } = require('jade');
 
-router.post('/singUp' , async (req, res) => {
-  await createUser(req.body) //  creating new user.
+
+
+
+router.post('/signUp' , async (req, res) => {
+  await createUsers.createUser(req.body)
   .then((data) => {
      if(data.length) {
         res.send("New user is created!")
@@ -14,7 +23,7 @@ router.post('/singUp' , async (req, res) => {
         res.send("Somthing is went wrong!")
      }  
    })
-});
+})
 
 // demo route
 router.get('/complete_todo', async (req, res) => {
@@ -91,5 +100,74 @@ router.post('/completed/todo/:todoId', async(req, res) => {
       })
    })
 })
+// router.post("/login/user", async (req, res) => {
+//    bcrypt.hash(req.body.password, 10)
+//    .then(hashedPassword => {
+//       return knex("users").insert({
+//          name:req.body.name,
+//          last_name:req.body.last_name,
+//          userName:req.body.userName,
+//          email: req.body.email,
+//          password: hashedPassword
+//       })
+//       .then(users => {
+//          res.send("user created")
+//       })
+//       .catch(error => console.log(error))
+//    })
+// })
+// router.get("/users", (req, res) => {
+//    knex("users")
+//    .then(users => {
+//       res.json(users)
+//    })
+// })
+
+
+router.post("/login", (req, res) => {
+    knex("users")
+   .where({email: req.body.email})
+   .first()
+   .then(user => {
+      if(!user){
+         res.status(401).json({
+            error: "invalid username or password"
+         })
+      }
+      else{
+         return bcrypt
+         .compare(req.body.password, user.password)
+         .then(() => {
+               jwt.sign({user},'secret',(err,token) => {
+                  res.json({token})
+               })
+            })
+         }
+   })
+})
+
+   router.post("/verify", (req, res) => {
+      const token = req.headers['authorization'].split(" ")[1]
+      jwt.verify(token, 'secret', (error, data) => {
+         if(error){
+            res.status(401).json({
+               message: "Unauthorized Access!"
+            })
+         } else {
+            const {user} = data;
+            knex('list')
+            .where({users_id : user.id})
+            .then(todo => {
+               res.status(200).json({
+                  message: "welcome to your site",
+                   todo
+               })
+            })
+            .catch(function (err) {
+               console.error(err);
+            });
+         }
+      })
+   })
 
 module.exports = router;
