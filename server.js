@@ -17,6 +17,6 @@ app.use(cors({origin: 'http://localhost:3000'}));
 
 app.use('/', route);
 // app.use('/',app);
-app.listen(3000, ()=> {
-    console.log("server is running on 3000")
+app.listen(8080, () => {
+    console.log("server is running on 8080")
 })

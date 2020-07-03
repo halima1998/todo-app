@@ -7,14 +7,8 @@ const createUsers = require('../service/users')
 const TodoService = require('../service/list');
 const completeTodo = require('../service/completed_list')
 const jwt = require("jsonwebtoken");
-const { token } = require('morgan');
-const { createList } = require('../service/list');
-const { render } = require('jade');
 
-
-
-
-router.post('/signUp' , async (req, res) => {
+router.post('/signUp', async (req, res) => {
   await createUsers.createUser(req.body)
   .then((data) => {
      if(data.length) {
