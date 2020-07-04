@@ -5,6 +5,8 @@ var route = require('./router/route.js');
 const { response } = require('express');
 const cors = require('cors');
 const bcrypt =require('bcrypt');
+const dotenv = require('dotenv').config();
+const env = require('env')
 // jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' }, function(err, token) {
 //     console.log(token);
 //   });
@@ -17,6 +19,6 @@ app.use(cors({origin: 'http://localhost:3000'}));
 
 app.use('/', route);
 // app.use('/',app);
-app.listen(8080, () => {
-    console.log("server is running on 8080")
+app.listen(process.env.APP_PORT, () => {
+    console.log("server is running")
 })
