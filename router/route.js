@@ -8,6 +8,7 @@ const TodoService = require('../service/list');
 const completeTodo = require('../service/completed_list')
 const jwt = require("jsonwebtoken");
 
+
 router.post('/signUp', async (req, res) => {
   await createUsers.createUser(req.body)
   .then((data) => {
@@ -125,7 +126,7 @@ router.post("/login", (req, res) => {
    .then(user => {
       if(!user){
          res.status(401).json({
-            error: "invalid username or password"
+            message:"invalid username or password"
          })
       }
       else{
