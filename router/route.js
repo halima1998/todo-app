@@ -13,9 +13,9 @@ router.post('/signUp', async (req, res) => {
   await createUsers.createUser(req.body)
   .then((data) => {
      if(data.length) {
-        res.send("New user is created!")
+        res.send(true)
      } else {
-        res.send("Somthing is went wrong!")
+        res.send(false)
      }  
    })
 })
