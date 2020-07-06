@@ -121,7 +121,7 @@ router.post('/completed/todo/:todoId', async(req, res) => {
 
 router.post("/login", (req, res) => {
     knex("users")
-   .where({email: req.body.email})
+   .where({email: req.body.email , password:req.body.password})
    .first()
    .then(user => {
       if(!user){
