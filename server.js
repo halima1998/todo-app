@@ -20,5 +20,5 @@ app.use(cors({origin: 'http://localhost:3000'}));
 app.use('/', route);
 // app.use('/',app);
 app.listen(process.env.APP_PORT, () => {
-    console.log("server is running")
+    console.log(`server is running ${process.env.APP_PORT}`)
 })

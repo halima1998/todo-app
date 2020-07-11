@@ -36,7 +36,7 @@ router.get('/get/all/users', async (req, res) => {
 
 router.post('/add/todo' , async(req, res) => {
    const details = req.body;
-   details.isPending = true
+   details.isPending = false
    await TodoService.createList(details) // It create new todo list
    .then((result) => {
       if(result.length) {
@@ -148,13 +148,14 @@ router.post("/login", (req, res) => {
                message: "Unauthorized Access!"
             })
          } else {
-            const {user} = data;
+            const { user } = data;
             knex('list')
             .where({users_id : user.id})
             .then(todo => {
                res.status(200).json({
                   message: "welcome to your site",
-                   todo
+                  todo: todo,
+                  user,
                })
             })
             .catch(function (err) {
