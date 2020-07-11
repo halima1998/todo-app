@@ -37,7 +37,7 @@ router.get('/get/all/users', async (req, res) => {
 
 router.post('/add/todo' , async(req, res) => {
    const details = req.body;
-   details.isPending = true
+   details.isPending = true;
    await TodoService.createList(details) // It create new todo list
    .then((result) => {
       if(result.length) {
@@ -121,12 +121,12 @@ router.post('/completed/todo/:todoId', async(req, res) => {
 
 router.post("/login", (req, res) => {
     knex("users")
-   .where({email: req.body.email , password:req.body.password})
+   .where({email: req.body.email},{ password:req.body.password})
    .first()
    .then(user => {
       if(!user){
          res.status(401).json({
-            message:"invalid username or password"
+            error:"invalid username or password"
          })
       }
       else{
