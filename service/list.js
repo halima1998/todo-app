@@ -14,7 +14,7 @@ module.exports = {
         description: req.body.description
      })
     },
-    grtTodo: (id) => {
+    getTodo: (id) => {
       return knex("list").where("users_id",id)
     },
     completeTodo: (todoId) => {
@@ -22,4 +22,5 @@ module.exports = {
         isPending: false
       }).where('id', todoId)
     }
+    
 }

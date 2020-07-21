@@ -39,9 +39,12 @@ router.post('/add/todo' , async(req, res) => {
    const details = req.body;
    details.isPending = true;
    await TodoService.createList(details) // It create new todo list
-   .then((result) => {
+   .then( async (result) => {
       if(result.length) {
-         res.send("data inserted!")
+         const todo = await TodoService.getTodoById(result[0])
+         res.send({
+            data:todo
+         })
       } else {
          res.send("Somthing is went wrong!")
       }  
@@ -60,7 +63,6 @@ router.delete('/delet/todo/:id' , async (req ,res)=>{
 router.put('/update/todo/:id' , async (req ,res)=>{
    await knex("list").where("id", req.params.id).update({ // It update respective todo list by id
       todo: req.body.todo,
-      description: req.body.description
    })
     .then(()=>{
        res.send("data update")
@@ -73,18 +75,6 @@ router.put('/update/todo/:id' , async (req ,res)=>{
       res.send(allTodo)
    })
  });
- 
- router.post('/completed_list' , async(req, res) =>{
-   await TodoService.createCompleted_list(req.body) // It create new completed list
-   .then((result) => {
-      if(result.length) {
-         res.send("data inserted!")
-      } else {
-         res.send("Somthing is went wrong!")
-      }  
-    })
-
-});
 
 router.post('/completed/todo/:todoId', async(req, res) => {
    const todoId = req.params.todoId
@@ -93,6 +83,7 @@ router.post('/completed/todo/:todoId', async(req, res) => {
       res.send({
          data: data
       })
+     
    })
 })
 // router.post("/login/user", async (req, res) => {
@@ -155,7 +146,8 @@ router.post("/login", (req, res) => {
             .then(todo => {
                res.status(200).json({
                   message: "welcome to your site",
-                   todo
+                   todo,
+                  user,
                })
             })
             .catch(function (err) {
