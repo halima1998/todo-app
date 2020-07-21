@@ -19,9 +19,11 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.1",
     "morgan": "~1.9.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "underscore": "^1.10.2"
   },
   "devDependencies": {
+    "@types/underscore": "^1.10.4",
     "nodemon": "^2.0.4"
   }
 }

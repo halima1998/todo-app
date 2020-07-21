@@ -14,12 +14,15 @@ module.exports = {
         description: req.body.description
      })
     },
-    grtTodo: (id) => {
-      return knex("list").where("users_id",id)
+    getTodo: (id) => {
+      return knex("list").where("users_id", id)
     },
     completeTodo: (todoId) => {
       return knex("list").update({
         isPending: false
       }).where('id', todoId)
+    },
+    getTodoById: (todo_id) => {
+      return knex("list").where("id", todo_id)
     }
 }

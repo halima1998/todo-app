@@ -8,6 +8,7 @@ const TodoService = require('../service/list');
 const completeTodo = require('../service/completed_list')
 const jwt = require("jsonwebtoken");
 
+
 router.post('/signUp', async (req, res) => {
   await createUsers.createUser(req.body)
   .then((data) => {
@@ -36,11 +37,14 @@ router.get('/get/all/users', async (req, res) => {
 
 router.post('/add/todo' , async(req, res) => {
    const details = req.body;
-   details.isPending = false
+   details.isPending = true
    await TodoService.createList(details) // It create new todo list
-   .then((result) => {
+   .then( async (result) => {
       if(result.length) {
-         res.send("data inserted!")
+         const todo = await TodoService.getTodoById(result[0])
+         res.send({
+            data: todo
+         })
       } else {
          res.send("Somthing is went wrong!")
       }  
@@ -59,14 +63,13 @@ router.delete('/delet/todo/:id' , async (req ,res)=>{
 router.put('/update/todo/:id' , async (req ,res)=>{
    await knex("list").where("id", req.params.id).update({ // It update respective todo list by id
       todo: req.body.todo,
-      description: req.body.description
    })
     .then(()=>{
        res.send("data update")
     })
  })
 
- router.get('/get/all/todo/:users_id' , async (req ,res)=>{
+ router.get('/getAllTodo/:users_id', async (req ,res)=>{
    await knex("list").where("users_id", req.params.users_id) // get all todo list of respective user by user_id
    .then((allTodo) => {
       res.send(allTodo)
@@ -120,12 +123,12 @@ router.post('/completed/todo/:todoId', async(req, res) => {
 
 router.post("/login", (req, res) => {
     knex("users")
-   .where({email: req.body.email})
+   .where({email: req.body.email},{ password:req.body.password})
    .first()
    .then(user => {
       if(!user){
          res.status(401).json({
-            error: "invalid username or password"
+            error:"invalid username or password"
          })
       }
       else{

@@ -7,8 +7,7 @@ exports.up = async (knex) => {
         table.string('userName').notNullable(),
         table.string('email').notNullable().unique()
         table.string('password').notNullable()
-    })
-   
+    }) 
 };
 
 exports.down = async (knex) => {
