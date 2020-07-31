@@ -11,7 +11,6 @@ module.exports = {
     updateTodo:(id)=>{
        return knex("list").where("id",id).update({ 
         todo: req.body.todo,
-        description: req.body.description
      })
     },
     getTodo: (id) => {
@@ -21,6 +20,8 @@ module.exports = {
       return knex("list").update({
         isPending: false
       }).where('id', todoId)
+    },
+    getTodoById: (todo_id) =>{
+      return knex("list").where("id",todo_id)
     }
-    
 }

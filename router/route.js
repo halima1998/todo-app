@@ -52,17 +52,17 @@ router.post('/add/todo' , async(req, res) => {
 
 });
 
-router.delete('/delet/todo/:id' , async (req ,res)=>{
-  await knex("list").where("id", req.params.id).del() // It delete respective todo list by id
+router.delete('/delete/:id' , async (req ,res)=>{
+  await knex("list").del(req.params.id) // It delete respective todo list by id
    .then(()=>{
       res.send("data deleted")
    })
 
 })
 
-router.put('/update/todo/:id' , async (req ,res)=>{
+router.put('/update/:id' , async (req ,res)=>{
    await knex("list").where("id", req.params.id).update({ // It update respective todo list by id
-      todo: req.body.todo,
+      todo: req.body.todo
    })
     .then(()=>{
        res.send("data update")
