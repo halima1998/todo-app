@@ -2,9 +2,11 @@ var knex = require('../knex');
 
 module.exports = {
     createList: (details) => {
-        console.log(details)
         return knex('list').insert(details);
     },
+    createList2: (detailsTrush) => {
+      return knex('trush').insert(detailsTrush);
+  },
     deleteTodo: (id) => {
       return knex("list").where("id", id).del()
     },

@@ -5,6 +5,7 @@ const bcrypt =require('bcrypt')
 const hash = bcrypt.hashSync(process.env.USER, 10)
 const createUsers = require('../service/users')
 const TodoService = require('../service/list');
+const TodoTrush = require('../service/trush');
 const completeTodo = require('../service/completed_list')
 const jwt = require("jsonwebtoken");
 
@@ -37,13 +38,18 @@ router.get('/get/all/users', async (req, res) => {
 
 router.post('/add/todo' , async(req, res) => {
    const details = req.body;
+   const detailsTrush = req.body;
    details.isPending = true;
+   detailsTrush.isPending = true;
    await TodoService.createList(details) // It create new todo list
+   await TodoTrush.createList(detailsTrush) // It create new todo trush
    .then( async (result) => {
       if(result.length) {
          const todo = await TodoService.getTodoById(result[0])
+         const todo1 = await TodoTrush.getTodoById(result[0])
          res.send({
-            data:todo
+            data:todo,
+            data:todo1,
          })
       } else {
          res.send("Somthing is went wrong!")
@@ -52,8 +58,9 @@ router.post('/add/todo' , async(req, res) => {
 
 });
 
+
 router.delete('/delete/:id' , async (req ,res)=>{
-  await knex("list").del(req.params.id) // It delete respective todo list by id
+  await knex("list").where('id',req.params.id).del() // It delete respective todo list by id
    .then(()=>{
       res.send("data deleted")
    })
@@ -72,7 +79,8 @@ router.put('/update/:id' , async (req ,res)=>{
  router.get('/get/all/todo/:users_id' , async (req ,res)=>{
    await knex("list").where("users_id", req.params.users_id) // get all todo list of respective user by user_id
    .then((allTodo) => {
-      res.send(allTodo)
+      let reversed = allTodo.reverse();
+      res.send(reversed)
    })
  });
 
